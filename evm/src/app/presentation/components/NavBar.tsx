@@ -45,6 +45,22 @@ const Navbar = () => (
                   Analytics
                 </a>
               </li>
+              <li>
+                <a
+                  href="/presentation/pages//registration"
+                  className="bg-white text-base text-black font-bold p-2 rounded-lg hover:animate-pulse transition"
+                >
+                  Sign up
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/presentation/pages/login"
+                  className="text-white-700 hover:text-gray-300 transition"
+                >
+                  Sign in
+                </a>
+              </li>
             </ul>
 
             {/* mobile phone button */}
