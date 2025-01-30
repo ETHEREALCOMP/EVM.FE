@@ -17,7 +17,7 @@ const LoginPage = () => {
     if (email === "admin@gmail.com" && password === "123456") {
       router.push("/");
     } else {
-      setError("Неправильний email або пароль");
+      setError("Wrong email or password");
     }
     //
   };

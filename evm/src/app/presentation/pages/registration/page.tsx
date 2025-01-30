@@ -23,12 +23,33 @@ const RegisterPage = () => {
 
     if(user.password !== user.confirmPassword){
       setError("Wrong password");
+      return;
     }
-    if (user.email && user.password) {
-      console.log("successfully", user);
-      router.push("/login");
-    } else {
-      setError("Please fill in all fields");
+    
+    try {
+      const response = await fetch("https://localhost:7034/identity/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: user.name,
+          email: user.email,
+          password: user.password,
+        }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData?.message || "Registration failed");
+      }
+
+      const data = await response.json();
+      console.log("Registration successful", data);
+  
+      router.push("/presentation/pages/login");
+    } catch (error: any) {
+      setError(error.message);
     }
   }
 
