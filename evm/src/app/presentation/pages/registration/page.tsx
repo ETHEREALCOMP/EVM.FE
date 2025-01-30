@@ -26,7 +26,7 @@ const RegisterPage = () => {
       setError("Wrong password");
       return;
     }
-    
+
     try {
       const response = await fetch("https://localhost:7034/identity/signup", {
         method: "POST",
