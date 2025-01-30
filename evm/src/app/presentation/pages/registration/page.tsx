@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 const RegisterPage = () => {
   const router = useRouter();
   const [user, setUser] = useState({
+    username: "",
     name: "",
     email: "",
     password: "",
@@ -28,30 +29,29 @@ const RegisterPage = () => {
     
     try {
       const response = await fetch("https://localhost:7034/identity/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: user.name,
-          email: user.email,
-          password: user.password,
-        }),
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+              username: user.name,
+              name: user.name,
+              email: user.email,
+              password: user.password,
+          }),
+          credentials: "include",
       });
   
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData?.message || "Registration failed");
+          throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
-      const data = await response.json();
-      console.log("Registration successful", data);
   
-      router.push("/presentation/pages/login");
-    } catch (error: any) {
-      setError(error.message);
-    }
-  }
+      const data = await response.json();
+      console.log("User signed up:", data);
+  } catch (error) {
+      console.error("Signup error:", error);
+  }  
+}
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-950">
