@@ -40,7 +40,7 @@ const RegisterPage = () => {
           password: user.password,
         }),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData?.message || "Registration failed");

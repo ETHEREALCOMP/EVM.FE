@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/presentation/context/AuthContext";
+import { loginUser } from "@/app/shared/api/login";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -16,22 +17,17 @@ const LoginPage = () => {
     setError("");
 
     try {
-      const response = await fetch("https://localhost:7034/identity/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const data = await loginUser(email, password);
 
-      if (!response.ok) {
-        throw new Error("Login failed");
+      if (!data.data.token) {
+        throw new Error("Token not found");
       }
 
-      const data = await response.json();
-      login(data.token); // 🔥 Викликаємо login з контексту
-
-      router.push("/");
-    } catch (err) {
-      setError("Invalid email or password");
+      login(data.token);
+      localStorage.setItem("token", data.data.token); 
+      router.push("/"); 
+    } catch (err: any) {
+      setError("Incorrect data!");
     }
   };
 
