@@ -1,28 +1,22 @@
-import { EventData } from "@/app/shared/types/events";
+const API_URL = "https://localhost:7034/event";
 
-const API_URL = "http://localhost:7034";
-
-export const createEvent = async (eventData: EventData) => {
+export const createEvent = async (title: string, description: string, location: string) => {
   try {
-    console.log("Requesting event creation with data:", eventData);
+    const token = localStorage.getItem("token");
+    console.log("Token:", token);
 
-    const response = await fetch(`${API_URL}/event`, {
+    const response = await fetch(API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
       },
-      body: JSON.stringify(eventData),
+      body: JSON.stringify({ title, description, location }),
+      credentials: "include",
     });
 
     if (!response.ok) {
       let errorMessage = "Error creating event.";
-      try {
-        const errorData = await response.json();
-        errorMessage = errorData.message || errorMessage;
-      } catch (err) {
-        console.error("Error parsing response:", err);
-      }
-
       throw new Error(errorMessage);
     }
 
@@ -30,5 +24,19 @@ export const createEvent = async (eventData: EventData) => {
   } catch (error) {
     console.error("API error:", error);
     throw error;
+  }
+};
+
+export const getEvents = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(API_URL);
+
+    if (!response.ok) throw new Error("Incorect getting events");
+    return await response.json();
+  } catch (error) {
+    console.error("rror:", error);
+    return [];
   }
 };

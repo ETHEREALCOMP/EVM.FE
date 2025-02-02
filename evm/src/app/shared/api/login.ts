@@ -12,7 +12,6 @@ export const loginUser = async (email: string, password: string) => {
       }
   
       const data = await response.json();
-      console.log(data.data.token);
       if (!data.data.token) throw new Error("Token error!");
   
       return data;
@@ -21,4 +20,3 @@ export const loginUser = async (email: string, password: string) => {
       throw error;
     }
   };
-  
