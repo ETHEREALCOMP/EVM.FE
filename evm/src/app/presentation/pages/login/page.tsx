@@ -18,13 +18,13 @@ const LoginPage = () => {
 
     try {
       const data = await loginUser(email, password);
-
-      if (!data.data.token) {
+      
+      if (!data.token) {
         throw new Error("Token not found");
       }
 
       login(data.token);
-      localStorage.setItem("token", data.data.token); 
+      localStorage.setItem("token", data.token); 
       router.push("/"); 
     } catch (err: any) {
       setError("Incorrect data!");

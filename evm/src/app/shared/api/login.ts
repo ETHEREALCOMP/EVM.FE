@@ -8,15 +8,18 @@ export const loginUser = async (email: string, password: string) => {
   
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Wrong email or password");
+        throw new Error(errorData.message || "Incorrect email or password");
       }
-  
-      const data = await response.json();
-      if (!data.data.token) throw new Error("Token error!");
+      
+      const jsonData = await response.json();
+      const data = jsonData.data;
+      console.log(data);
+
+      if (!data.token) throw new Error("Token error!");
   
       return data;
     } catch (error) {
       console.error(error);
-      throw error;
-    }
-  };
+      throw error; 
+  }
+};
