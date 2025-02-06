@@ -1,5 +1,6 @@
 import Navbar from "@/app/presentation/components/NavBar";
 import type { Metadata } from "next";
+import { AuthProvider } from "@/app/presentation/context/AuthContext";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/shared/styles/globals.css";
 
@@ -25,12 +26,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <AuthProvider>
         <Navbar />
         {children}
-      </body>
-    </html>
+      </AuthProvider>
+    </body>
+  </html>
   );
 }

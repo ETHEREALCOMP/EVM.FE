@@ -2,6 +2,8 @@
 
 import React, {useState} from "react";
 import { useRouter } from "next/navigation";
+import { registrationUser } from "@/app/shared/api/registration";
+import { validatePassword } from "@/app/presentation/context/validatePassword";
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -21,46 +23,44 @@ const RegisterPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+  
+    const passwordError = validatePassword(user.password);
+    if (passwordError) {
+      setError(passwordError);
+      return;
+    }
 
     if(user.password !== user.confirmPassword){
       setError("Wrong password");
       return;
     }
-    
+  
     try {
-      const response = await fetch("https://localhost:7034/identity/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userName: user.name,
-          name: user.name,
-          email: user.email,
-          password: user.password,
-        }),
-      });
-  
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData?.message || "Registration failed");
-      }
+      const response = await registrationUser(user);
 
-      const data = await response.json();
-      console.log("Registration successful", data);
-  
       router.push("/presentation/pages/login");
     } catch (error: any) {
       setError(error.message);
     }
-  }
-
+  };
+  
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-950">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
         <h2 className="text-2xl text-gray-800 font-bold mb-4 text-center">Sign up</h2>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+            <label className="block text-sm text-gray-700 font-medium">User Name:</label>
+            <input
+              type="text"
+              name="userName"
+              value={user.userName}
+              onChange={handleChange}
+              className="w-full text-gray-700 px-3 py-2 border border-gray-500 rounded-md"
+              required
+            />
+          </div>
           <div>
             <label className="block text-sm text-gray-700 font-medium">Name:</label>
             <input

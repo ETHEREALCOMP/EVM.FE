@@ -1,27 +1,36 @@
 "use client";
 
-import {useState} from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/presentation/context/AuthContext";
+import { loginUser } from "@/app/shared/api/login";
 
 const LoginPage = () => {
   const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-  
-    //example, replace with database validation or api
-    if (email === "admin@gmail.com" && password === "123456") {
-      router.push("/");
-    } else {
-      setError("Wrong email or password");
+
+    try {
+      const data = await loginUser(email, password);
+      
+      if (!data.token) {
+        throw new Error("Token not found");
+      }
+
+      login(data.token);
+      localStorage.setItem("token", data.token); 
+      router.push("/"); 
+    } catch (err: any) {
+      setError("Incorrect data!");
     }
-    //
   };
-  
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-950">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
@@ -48,16 +57,13 @@ const LoginPage = () => {
               required
             />
           </div>
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-            >
-              Login
-            </button>
+          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md">
+            Login
+          </button>
         </form>
       </div>
     </div>
   );
 };
-  
+
 export default LoginPage;
