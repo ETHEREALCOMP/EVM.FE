@@ -8,7 +8,7 @@ const Navbar = () => {
   const { isAuthenticated, logout } = useAuth();
 
   return (
-    <nav className="shadow-md bg-gray-900 text-white">
+    <nav className="shadow-md text-branding-white">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link href="/" className="text-2xl font-bold hover:text-gray-300">EventManager</Link>
         <ul className="hidden md:flex space-x-6">
