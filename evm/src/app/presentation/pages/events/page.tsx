@@ -2,16 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { getEvents } from "@/app/shared/api/events";
-import { EventType } from "@/app/shared/types/events";
+import { EventType } from "@/app/shared/types/events"
 import Link from "next/link";
 
 export default function EventsPage() {
-  const [events, setEvents] = useState<EventType[]>([]);
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
     const loadEvents = async () => {
       const data = await getEvents();
-      setEvents(data.data);
+      setEvents(data);
     };
     loadEvents();
   }, []);
@@ -29,7 +29,7 @@ export default function EventsPage() {
 
       <ul className="mt-4 space-y-4">
         {events.length > 0 ? (
-          events.map((event) => (
+          events.map((event: EventType) => (
             <li
               key={event.id}
               className="border p-4 rounded-lg shadow-md hover:bg-gray-100 transition"
@@ -41,7 +41,7 @@ export default function EventsPage() {
             </li>
           ))
         ) : (
-          <p className="text-gray-500">😔 No events available</p>
+          <p className="text-gray-500">😔</p>
         )}
       </ul>
     </div>
