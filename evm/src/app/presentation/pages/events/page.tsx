@@ -11,7 +11,8 @@ export default function EventsPage() {
   useEffect(() => {
     const loadEvents = async () => {
       const data = await getEvents();
-      setEvents(data);
+      console.log(data);
+      setEvents(data.data);
     };
     loadEvents();
   }, []);
@@ -34,8 +35,9 @@ export default function EventsPage() {
               key={event.id}
               className="border p-4 rounded-lg shadow-md hover:bg-gray-100 transition"
             >
+              
               <Link href={`/event/${event.id}`} className="text-xl font-bold">
-                {event.title}
+                {event.name}
               </Link>
               <p className="text-gray-600">{event.description}</p>
             </li>

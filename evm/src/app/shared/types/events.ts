@@ -6,7 +6,7 @@ export interface createEvent {
 
 export type EventType = {
     id: string;
-    title: string;
+    name: string;
     description: string;
     location: string;
 };

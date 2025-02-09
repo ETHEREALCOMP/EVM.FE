@@ -45,7 +45,7 @@ const RegisterPage = () => {
   };
   
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-950">
+    <div className="flex items-center justify-center min-h-screen">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
         <h2 className="text-2xl text-gray-800 font-bold mb-4 text-center">Sign up</h2>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
