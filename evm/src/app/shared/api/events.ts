@@ -51,3 +51,33 @@ export const getEvents = async () => {
     return [];
   }
 };
+
+
+export const updateEvent = async (title: string, description: string, location: string) => {
+  try {
+    const token = localStorage.getItem("token");
+    console.log("Token:", token);
+
+    const response = await fetch("https://localhost:7034/event", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({ title, description, location }),
+      credentials: "include"
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      let errorMessage = "Error creating event.";
+      throw new Error(errorMessage);
+    }
+
+    return data;
+  } catch (error) {
+    console.error("API error:", error);
+    throw error;
+  }
+};
