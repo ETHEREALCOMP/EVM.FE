@@ -44,7 +44,7 @@ export const getEvents = async () => {
     if (!response.ok) throw new Error("Error getting events");
 
     const data = await response.json();
-    console.log(data.data);
+
     return data;
   } catch (error) {
     console.error("Error:", error);
