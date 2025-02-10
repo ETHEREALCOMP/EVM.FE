@@ -18,34 +18,42 @@ export default function EventsPage() {
   }, []);
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-8 p-6">
       <h1 className="text-3xl font-bold mb-4">List events</h1>
 
       <Link
         href="/presentation/pages/create-event"
-        className="bg-blue-500 text-white px-4 py-2 rounded-lg mb-4 inline-block"
+        className="branding-white text-black text-lg font-bold px-4 py-2 rounded-lg mb-4 inline-block hover:bg-gray-200 transition"
       >
         + Create event
       </Link>
 
-      <ul className="mt-4 space-y-4">
+      
+      <ul className="mt-6 space-y-4">
         {events.length > 0 ? (
           events.map((event: EventType) => (
             <li
               key={event.id}
-              className="border p-4 rounded-lg shadow-md hover:bg-gray-100 transition"
+              className="border p-4 rounded-lg shadow-md transition duration-300 hover:bg-white hover:text-black"
             >
-              
-              <Link href={`/event/${event.id}`} className="text-xl font-bold">
-                {event.name}
+              <Link href={`/presentation/pages/event/${event.id}`} className="block">
+                <h3 className="text-lg font-semibold group-hover:text-black">
+                  {event.name}
+                </h3>
+                <p className="text-xl group-hover:text-gray-700">
+                  {event.description}
+                </p>
               </Link>
-              <p className="text-gray-600">{event.description}</p>
             </li>
           ))
         ) : (
-          <p className="text-gray-500">😔</p>
+          <p className="text-gray-700 text-lg text-center">
+            Try to create your future events that will lead you to fulfill your dreams ❤️
+          </p>
         )}
       </ul>
+
+
     </div>
   );
 }

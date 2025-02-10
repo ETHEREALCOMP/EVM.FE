@@ -73,7 +73,7 @@ export default function CreateEvent() {
         <div className="flex items-center justify-between mt-4">
           <button
             type="submit"
-            className="w-full flex items-center justify-center bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+            className="w-full flex items-center justify-center branding-dark-gray text-white py-2 rounded-md hover:opacity-95 transition"
             disabled={loading}
           >
             {loading ? <FaSpinner className="animate-spin" /> : <FaPlus className="mr-2" />}
