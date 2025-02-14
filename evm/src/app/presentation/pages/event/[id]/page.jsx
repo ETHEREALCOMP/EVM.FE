@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getEventById, deleteEventById } from "@/app/shared/api/events";
 import { FaCalendarAlt, FaMapMarkerAlt } from "react-icons/fa";
+import AddTaskForm from "@/app/presentation/components/AddTaskForm";
+import TaskModal from "@/app/presentation/components/ModalTask";
 
 export default function EventPage() {
   const { id } = useParams();
@@ -11,6 +13,7 @@ export default function EventPage() {
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -55,7 +58,15 @@ export default function EventPage() {
           <span>{event.location || "No location specified"}</span>
         </div>
       </div>
-      <div className="max-w-3xl mx-auto mt-6 p-6 bg-white shadow-md rounded-lg">
+
+      <div className="max-w-3xl mx-auto mt-6 p-6 bg-white shadow-md rounded-lg flex gap-4">
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+        >
+          Add Task
+        </button>
+
         <button 
           onClick={handleDeleteEvent}
           className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
@@ -63,6 +74,10 @@ export default function EventPage() {
           Delete Event
         </button>
       </div>
+
+      <TaskModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <AddTaskForm eventId={id} onTaskAdded={() => setIsModalOpen(false)} />
+      </TaskModal>
     </div>
   );
 }
