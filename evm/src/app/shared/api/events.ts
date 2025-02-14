@@ -76,3 +76,21 @@ export const getEventById = async (id: string) => {
     return [];
   }
 };
+
+export const deleteEventById = async (id: string) => {
+  try {
+    const response = await fetch(`https://localhost:7034/event/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+
+    if (!response.ok) throw new Error("Failed to delete event");
+    
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    alert("Error deleting event");
+  }
+};
