@@ -47,7 +47,7 @@ export default function EventsPage() {
             </li>
           ))
         ) : (
-          <p className="text-gray-700 text-lg text-center">
+          <p className="text-white text-lg text-center">
             Try to create your future events that will lead you to fulfill your dreams ❤️
           </p>
         )}

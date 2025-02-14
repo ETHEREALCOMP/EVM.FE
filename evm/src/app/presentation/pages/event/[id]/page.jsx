@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { getEventById } from "@/app/shared/api/events";
+import { useParams, useRouter } from "next/navigation";
+import { getEventById, deleteEventById } from "@/app/shared/api/events";
 import { FaCalendarAlt, FaMapMarkerAlt } from "react-icons/fa";
 
 export default function EventPage() {
   const { id } = useParams();
+  const router = useRouter();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -23,27 +24,44 @@ export default function EventPage() {
         setLoading(false);
       }
     };
-
     fetchEvent();
   }, [id]);
+
+  const handleDeleteEvent = async () => {
+    if (!window.confirm("Are you sure you want to delete this event?")) return;
+    try {
+      await deleteEventById(id);
+      router.push("/presentation/pages/events");
+    } catch (error) {
+      alert("Error deleting event");
+    }
+  };
 
   if (loading) return <p className="text-center text-gray-700">Loading event...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
   if (!event) return <p className="text-center text-gray-700">Event not found.</p>;
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-3xl font-bold text-gray-800">{event.name}</h1>
-      <p className="text-gray-600 mt-2">{event.description}</p>
-
-      <div className="mt-4 flex items-center text-gray-700">
-        <FaCalendarAlt className="mr-2 text-blue-600" />
-        <span>{event.date || "No date specified"}</span>
+    <div>
+      <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
+        <h1 className="text-3xl font-bold text-gray-800">{event.name}</h1>
+        <p className="text-gray-600 mt-2">{event.description}</p>
+        <div className="mt-4 flex items-center text-gray-700">
+          <FaCalendarAlt className="mr-2 text-blue-600" />
+          <span>{event.date || "No date specified"}</span>
+        </div>
+        <div className="mt-2 flex items-center text-gray-700">
+          <FaMapMarkerAlt className="mr-2 text-red-600" />
+          <span>{event.location || "No location specified"}</span>
+        </div>
       </div>
-
-      <div className="mt-2 flex items-center text-gray-700">
-        <FaMapMarkerAlt className="mr-2 text-red-600" />
-        <span>{event.location || "No location specified"}</span>
+      <div className="max-w-3xl mx-auto mt-6 p-6 bg-white shadow-md rounded-lg">
+        <button 
+          onClick={handleDeleteEvent}
+          className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+        >
+          Delete Event
+        </button>
       </div>
     </div>
   );
