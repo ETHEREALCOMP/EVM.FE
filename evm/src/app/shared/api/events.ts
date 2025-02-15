@@ -1,4 +1,6 @@
-export const createEvent = async (title: string, description: string, location: string) => {
+import { CreateEventRequest } from "@/app/shared/types/events";
+
+export const createEvent = async (eventData: CreateEventRequest) => {
   try {
     const token = localStorage.getItem("token");
     console.log("Token:", token);
@@ -9,15 +11,16 @@ export const createEvent = async (title: string, description: string, location: 
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
       },
-      body: JSON.stringify({ title, description, location }),
-      credentials: "include"
+      body: JSON.stringify(eventData),
+      credentials: "include",
     });
 
-    const data = await response.json();
+    const jsonData = await response.json();
 
+    const data = jsonData.data;
+    console.log(data);
     if (!response.ok) {
-      let errorMessage = "Error creating event.";
-      throw new Error(errorMessage);
+      throw new Error(jsonData.message || "Error creating event.");
     }
 
     return data;
@@ -43,7 +46,8 @@ export const getEvents = async () => {
 
     if (!response.ok) throw new Error("Error getting events");
 
-    const data = await response.json();
+    const jsonData = await response.json();
+    const data = jsonData.data;
 
     return data;
   } catch (error) {
@@ -68,7 +72,8 @@ export const getEventById = async (id: string) => {
 
     if (!response.ok) throw new Error("Error getting events");
 
-    const data = await response.json();
+    const jsonData = await response.json();
+    const data = jsonData.data;
 
     return data;
   } catch (error) {
@@ -91,6 +96,5 @@ export const deleteEventById = async (id: string) => {
     
   } catch (error) {
     console.error("Error deleting event:", error);
-    alert("Error deleting event");
   }
 };

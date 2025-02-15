@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getEventById, deleteEventById } from "@/app/shared/api/events";
+import { getTasksByEventId } from "@/app/shared/api/tasks";
 import { FaCalendarAlt, FaMapMarkerAlt } from "react-icons/fa";
 import AddTaskForm from "@/app/presentation/components/AddTaskForm";
 import TaskModal from "@/app/presentation/components/ModalTask";
@@ -10,24 +11,29 @@ import TaskModal from "@/app/presentation/components/ModalTask";
 export default function EventPage() {
   const { id } = useParams();
   const router = useRouter();
+  
   const [event, setEvent] = useState(null);
+  const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    const fetchEvent = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getEventById(id);
-        if (!data) throw new Error("Event not found");
-        setEvent(data.data);
+        const eventData = await getEventById(id);
+        if (!eventData) throw new Error("Event not found");
+        setEvent(eventData);
+
+        const taskData = await getTasksByEventId(id);
+        setTasks(taskData);
       } catch (err) {
         setError("Failed to load event.");
       } finally {
         setLoading(false);
       }
     };
-    fetchEvent();
+    fetchData();
   }, [id]);
 
   const handleDeleteEvent = async () => {
@@ -37,6 +43,16 @@ export default function EventPage() {
       router.push("/presentation/pages/events");
     } catch (error) {
       alert("Error deleting event");
+    }
+  };
+
+  const handleTaskAdded = async () => {
+    setIsModalOpen(false);
+    try {
+      const updatedTasks = await getTasksByEventId(id);
+      setTasks(updatedTasks);
+    } catch (err) {
+      console.error("Failed to refresh tasks", err);
     }
   };
 
@@ -59,10 +75,26 @@ export default function EventPage() {
         </div>
       </div>
 
+      <div className="max-w-3xl mx-auto mt-6 p-6 bg-white shadow-md rounded-lg">
+        <h2 className="text-2xl text-gray-700 font-semibold mb-4">Tasks</h2>
+        {tasks.length > 0 ? (
+          <ul className="space-y-2">
+            {tasks.map((task) => (
+              <li key={task.id} className="p-3 bg-gray-100 rounded-md shadow">
+                <h3 className="text-lg text-gray-700 font-bold">{task.title}</h3>
+                <p className="text-gray-600">{task.description}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-600">No tasks added yet.</p>
+        )}
+      </div>
+      
       <div className="max-w-3xl mx-auto mt-6 p-6 bg-white shadow-md rounded-lg flex gap-4">
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+          className="px-4 py-2 branding-dark-gray text-white rounded-md hover:opacity-95 transition"
         >
           Add Task
         </button>
@@ -76,7 +108,7 @@ export default function EventPage() {
       </div>
 
       <TaskModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <AddTaskForm eventId={id} onTaskAdded={() => setIsModalOpen(false)} />
+        <AddTaskForm eventId={id} onTaskAdded={handleTaskAdded} />
       </TaskModal>
     </div>
   );
