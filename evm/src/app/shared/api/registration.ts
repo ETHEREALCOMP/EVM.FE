@@ -12,8 +12,9 @@ export const registrationUser = async (user: {
         credentials: "include",
       });
   
-      const data = await response.json();
-
+      const jsonData = await response.json();
+      const data = jsonData.data;
+      
       if (!response.ok) {
         throw new Error(data?.message || "Registration failed");
       }

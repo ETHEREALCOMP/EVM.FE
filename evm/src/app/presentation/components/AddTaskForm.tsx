@@ -56,7 +56,7 @@ const AddTaskForm = ({ eventId, onTaskAdded }: { eventId: string; onTaskAdded: (
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+        className="w-full branding-dark-gray text-white py-2 rounded-md hover:opacity-95 transition"
       >
         {loading ? "Adding..." : "Add Task"}
       </button>

@@ -32,7 +32,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
         <h2 className="text-2xl text-gray-800 font-bold mb-4 text-center">Sign in</h2>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
@@ -57,7 +57,7 @@ const LoginPage = () => {
               required
             />
           </div>
-          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md">
+          <button type="submit" className="w-full branding-dark-gray text-white py-2 rounded-md hover:opacity-95 transition">
             Login
           </button>
         </form>

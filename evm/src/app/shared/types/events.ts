@@ -10,3 +10,16 @@ export type EventType = {
     description: string;
     location: string;
 };
+
+export interface CreateEventRequest {
+    title: string;
+    description: string;
+    location: string;
+    isTicket: boolean;
+    ticketRequest?: {
+      price: number;
+      location: string;
+      type: number;
+    };
+}
+  

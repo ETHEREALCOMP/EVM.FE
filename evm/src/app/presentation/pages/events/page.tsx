@@ -11,8 +11,7 @@ export default function EventsPage() {
   useEffect(() => {
     const loadEvents = async () => {
       const data = await getEvents();
-      console.log(data);
-      setEvents(data.data);
+      setEvents(data);
     };
     loadEvents();
   }, []);

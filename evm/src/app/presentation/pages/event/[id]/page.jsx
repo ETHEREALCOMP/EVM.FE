@@ -20,7 +20,7 @@ export default function EventPage() {
       try {
         const data = await getEventById(id);
         if (!data) throw new Error("Event not found");
-        setEvent(data.data);
+        setEvent(data);
       } catch (err) {
         setError("Failed to load event.");
       } finally {
@@ -62,7 +62,7 @@ export default function EventPage() {
       <div className="max-w-3xl mx-auto mt-6 p-6 bg-white shadow-md rounded-lg flex gap-4">
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+          className="px-4 py-2 branding-dark-gray text-white rounded-md hover:opacity-95 transition"
         >
           Add Task
         </button>

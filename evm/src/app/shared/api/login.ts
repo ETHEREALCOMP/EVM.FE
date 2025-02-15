@@ -13,7 +13,6 @@ export const loginUser = async (email: string, password: string) => {
       
       const jsonData = await response.json();
       const data = jsonData.data;
-      console.log(data);
 
       if (!data.token) throw new Error("Token error!");
   
