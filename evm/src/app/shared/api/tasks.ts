@@ -56,3 +56,56 @@ export const getTasksByEventId = async (eventId: string) => {
   return [];
 }
 };
+
+export const updateTask = async (taskId: string, updatedData: Record<string, any>) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("No token found");
+
+    const response = await fetch(`https://localhost:7034/event/task/${taskId}`, {
+      method: "PATCH",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      credentials: "include",
+      body: JSON.stringify(updatedData),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error updating task: ${errorText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating task:", error);
+    return null;
+  }
+};
+
+export const deleteTask = async (taskId: string) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("No token found");
+
+    const response = await fetch(`https://localhost:7034/event/task/${taskId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error deleting task: ${errorText}`);
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error deleting task:", error);
+    return false;
+  }
+};
