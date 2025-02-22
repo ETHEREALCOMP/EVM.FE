@@ -7,6 +7,7 @@ import { getTasksByEventId } from "@/app/shared/api/tasks";
 import { FaCalendarAlt, FaMapMarkerAlt } from "react-icons/fa";
 import AddTaskForm from "@/app/presentation/components/AddTaskForm";
 import TaskModal from "@/app/presentation/components/ModalTask";
+import UpdateEvent from "@/app/presentation/components/UpdateEvent";
 
 export default function EventPage() {
   const { id } = useParams();
@@ -17,6 +18,7 @@ export default function EventPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,6 +57,12 @@ export default function EventPage() {
       console.error("Failed to refresh tasks", err);
     }
   };
+
+  const handleEventUpdated = (updatedEventData) => {
+    setEvent(updatedEventData);
+    setIsUpdateModalOpen(false);
+  };
+  
 
   if (loading) return <p className="text-center text-gray-700">Loading event...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
@@ -105,10 +113,20 @@ export default function EventPage() {
         >
           Delete Event
         </button>
-      </div>
 
+        <button 
+          onClick={() => setIsUpdateModalOpen(true)}
+          className="px-4 py-2 branding-dark-gray text-white rounded-md hover:opacity-95 transition"
+        >
+          Update Event
+        </button>
+      </div>
+      
       <TaskModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <AddTaskForm eventId={id} onTaskAdded={handleTaskAdded} />
+      </TaskModal>
+      <TaskModal isOpen={isUpdateModalOpen} onClose={() => setIsUpdateModalOpen(false)}>
+        <UpdateEvent initialData={event} onSave={handleEventUpdated} />
       </TaskModal>
     </div>
   );

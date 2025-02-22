@@ -22,4 +22,16 @@ export interface CreateEventRequest {
       type: number;
     };
 }
+
+export interface UpdateEventRequest {
+    title?: string;
+    description?: string;
+    location?: string;
+    isTicket?: boolean;
+    ticketRequest?: {
+      price: number;
+      location: string;
+      type: number;
+    };
+}
   

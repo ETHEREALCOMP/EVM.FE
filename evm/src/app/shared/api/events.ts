@@ -30,6 +30,34 @@ export const createEvent = async (eventData: CreateEventRequest) => {
   }
 };
 
+export const updateEvent = async (eventId: string, eventData: any) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("No token found");
+
+    const response = await fetch(`https://localhost:7034/event/${eventId}`, {
+      method: "PATCH",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      credentials: "include",
+      body: JSON.stringify(eventData)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error updating event: ${errorText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error:", error);
+    return null;
+  }
+};
+
+
 export const getEvents = async () => {
   try {
     const token = localStorage.getItem("token");
