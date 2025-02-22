@@ -8,6 +8,7 @@ import { FaCalendarAlt, FaMapMarkerAlt } from "react-icons/fa";
 import AddTaskForm from "@/app/presentation/components/AddTaskForm";
 import TaskModal from "@/app/presentation/components/ModalTask";
 import UpdateEvent from "@/app/presentation/components/UpdateEvent";
+import UpdateTask from "@/app/presentation/components/UpdateTask";
 
 export default function EventPage() {
   const { id } = useParams();
@@ -58,11 +59,19 @@ export default function EventPage() {
     }
   };
 
+  const handleTaskUpdated = async () => {
+    try {
+      const updatedTasks = await getTasksByEventId(id);
+      setTasks(updatedTasks);
+    } catch (err) {
+      console.error("Failed to refresh tasks", err);
+    }
+  };
+
   const handleEventUpdated = (updatedEventData) => {
     setEvent(updatedEventData);
     setIsUpdateModalOpen(false);
   };
-  
 
   if (loading) return <p className="text-center text-gray-700">Loading event...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
@@ -88,9 +97,15 @@ export default function EventPage() {
         {tasks.length > 0 ? (
           <ul className="space-y-2">
             {tasks.map((task) => (
-              <li key={task.id} className="p-3 bg-gray-100 rounded-md shadow">
-                <h3 className="text-lg text-gray-700 font-bold">{task.title}</h3>
-                <p className="text-gray-600">{task.description}</p>
+              <li 
+                key={task.id} 
+                className="p-3 bg-gray-100 rounded-md shadow flex justify-between items-center"
+              >
+                <div>
+                  <h3 className="text-lg text-gray-700 font-bold">{task.title}</h3>
+                  <p className="text-gray-600">{task.description}</p>
+                </div>
+                <UpdateTask task={task} onTaskUpdated={handleTaskUpdated} />
               </li>
             ))}
           </ul>
@@ -108,26 +123,31 @@ export default function EventPage() {
         </button>
 
         <button 
+          onClick={() => setIsUpdateModalOpen(true)}
+          className="px-4 py-2 branding-dark-gray text-white rounded-md hover:opacity-95 transition"
+        >
+          Update Event
+        </button>
+        
+        <button 
           onClick={handleDeleteEvent}
           className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
         >
           Delete Event
         </button>
 
-        <button 
-          onClick={() => setIsUpdateModalOpen(true)}
-          className="px-4 py-2 branding-dark-gray text-white rounded-md hover:opacity-95 transition"
-        >
-          Update Event
-        </button>
       </div>
       
       <TaskModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <AddTaskForm eventId={id} onTaskAdded={handleTaskAdded} />
       </TaskModal>
-      <TaskModal isOpen={isUpdateModalOpen} onClose={() => setIsUpdateModalOpen(false)}>
-        <UpdateEvent initialData={event} onSave={handleEventUpdated} />
-      </TaskModal>
+      
+      <UpdateEvent 
+        initialData={event} 
+        onSave={handleEventUpdated}
+        isOpen={isUpdateModalOpen}
+        onClose={() => setIsUpdateModalOpen(false)}
+      />
     </div>
   );
 }
