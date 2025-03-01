@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { updateTask } from "@/app/shared/api/tasks";
+import { updateTask, deleteTask } from "@/app/shared/api/tasks"; 
+import { FaTrash } from "react-icons/fa"; 
 
 interface Task {
   id: string;
   title: string;
   description?: string;
+  status?: number;
 }
 
 interface TaskFormProps {
@@ -32,14 +34,35 @@ const UpdateTask = ({ task, onTaskUpdated }: TaskFormProps) => {
     setError("");
 
     try {
-      const updatedTask = await updateTask(task.id, { title, description });
+      const updatedTask = await updateTask(task.id, { 
+        title, 
+        description, 
+        status: task.status || 0
+      });
       if (!updatedTask) throw new Error("Failed to update task.");
-
       onTaskUpdated();
       setIsUpdateModalOpen(false);
     } catch (err) {
       setError("Failed to update task.");
-      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete this task?")) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const success = await deleteTask(task.id);
+      if (!success) throw new Error("Failed to delete task.");
+
+      onTaskUpdated();
+    } catch (err) {
+      setError("Failed to delete task.");
+      console.error("Error in handleDelete:", err);
     } finally {
       setLoading(false);
     }
@@ -47,19 +70,20 @@ const UpdateTask = ({ task, onTaskUpdated }: TaskFormProps) => {
 
   return (
     <>
-      <div>  
+      <div className="flex space-x-2">
         <button
-            onClick={() => setIsUpdateModalOpen(true)}
-            className="px-4 py-2 mx-2 branding-dark-gray text-white rounded-md hover:opacity-95 transition"
+          onClick={() => setIsUpdateModalOpen(true)}
+          className="px-4 py-2 branding-dark-gray text-white rounded-md hover:opacity-95 transition"
         >
-            Edit Task
+          Edit Task
         </button>
 
         <button
-            onClick={() => setIsUpdateModalOpen(true)}
-            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+          onClick={handleDelete}
+          className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition flex items-center justify-center"
+          disabled={loading}
         >
-            Delete
+          <FaTrash />
         </button>
       </div>
 
@@ -91,13 +115,14 @@ const UpdateTask = ({ task, onTaskUpdated }: TaskFormProps) => {
                   type="button"
                   onClick={() => setIsUpdateModalOpen(false)}
                   className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                  disabled={loading}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-4 py-2 branding-dark-gray text-white py-2 rounded-md hover:opacity-95 transition"
+                  className="px-4 py-2 branding-dark-gray text-white rounded-md hover:opacity-95 transition"
                 >
                   {loading ? "Updating..." : "Update Task"}
                 </button>

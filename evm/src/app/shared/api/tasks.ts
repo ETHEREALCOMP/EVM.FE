@@ -47,8 +47,6 @@ export const getTasksByEventId = async (eventId: string) => {
 
   const jsonData = await response.json();
   const data = jsonData.data.eTask;
-
-  console.log(data);
   
   return data;
 } catch (error) {
@@ -66,10 +64,14 @@ export const updateTask = async (taskId: string, updatedData: Record<string, any
       method: "PATCH",
       headers: { 
         "Content-Type": "application/json",
+        "Accept": "application/json",
         "Authorization": `Bearer ${token}`,
       },
       credentials: "include",
-      body: JSON.stringify(updatedData),
+      body: JSON.stringify({
+        ...updatedData,
+        status: updatedData.status || 0,
+      }),
     });
 
     if (!response.ok) {
@@ -77,7 +79,8 @@ export const updateTask = async (taskId: string, updatedData: Record<string, any
       throw new Error(`Error updating task: ${errorText}`);
     }
 
-    return await response.json();
+    const jsonData = await response.json();
+    return jsonData.data;
   } catch (error) {
     console.error("Error updating task:", error);
     return null;
